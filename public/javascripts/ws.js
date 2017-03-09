@@ -5,6 +5,16 @@
 	// Connection opened
 	socket.addEventListener('open', function (event) {
 		socket.send('Hello Server!');
+		navigator.getBattery().then(battery => {
+			console.log(battery);
+
+			let workerDescription = {
+				cores: navigator.hardwareConcurrency,
+				battery
+			}
+			console.log(workerDescription);
+			socket.send(JSON.stringify(workerDescription));
+		});
 	});
 
 	// Listen for messages
