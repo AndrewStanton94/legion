@@ -26,14 +26,6 @@ app.use(function (req, res, next) {
 
 app.use('/', routes);
 
-// app.ws('/', function(ws, req) {
-//   ws.on('message', function(msg) {
-//     console.log(msg);
-//   });
-//   console.log('socket', req.testing);
-// });
-
-
 var router = express.Router();
 router.ws('/echo', function(ws, req) {
   ws.on('message', function(msg) {
@@ -42,11 +34,5 @@ router.ws('/echo', function(ws, req) {
 });
 
 app.use("/ws-stuff", router);
-app.ws('/echo', function(ws, req) {
-  ws.on('message', function(msg) {
-    console.log(msg);
-    ws.send(msg);
-  });
-});
 
 app.listen(8080);
