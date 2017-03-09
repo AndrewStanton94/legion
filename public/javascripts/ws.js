@@ -1,6 +1,6 @@
 	console.log('Loaded');
 	// Create WebSocket connection.
-	const socket = new WebSocket('ws://localhost:4242/ws-stuff/echo');
+	const socket = new WebSocket('ws://localhost:8080/ws-stuff/echo');
 
 	// Connection opened
 	socket.addEventListener('open', function (event) {
