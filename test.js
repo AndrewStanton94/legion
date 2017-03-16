@@ -4,10 +4,11 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 var expressWs = require('express-ws')(app);
+
+CLIENTS = {};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,13 +26,22 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', routes);
+app.use('/admin', require('./routes/admin'));
 
 var router = express.Router();
 router.ws('/echo', function(ws, req) {
-  ws.on('message', function(msg) {
-    console.log('Recieved: ', msg);
-    ws.send(msg);
-  });
+	ws.on('close', function(msg) {
+		console.log('Byee: ', msg);
+	});
+	ws.on('message', function(msg) {
+		let data = JSON.parse(msg);
+		console.log('Recieved: ', data);
+		console.log('Battery: ', data.battery);
+		ws.send(msg);
+		data.ws = ws;
+		CLIENTS[data.id] = data;
+		console.log(CLIENTS);
+	});
 });
 
 app.use("/ws-stuff", router);
