@@ -1,13 +1,11 @@
 window.addEventListener('load', () => {
-	console.log('Loaded');
-	// Create WebSocket connection.
-	const socket = new WebSocket(`ws://${location.host}/ws-stuff/echo`);
+	const socket = io(`${location.host}`);
+	document.socket = socket;
+	socket.on('interrogate', data => {
+		console.log(data);
 
-	// Connection opened
-	socket.addEventListener('open', function (event) {
 		navigator.getBattery().then(battery => {
 			console.log(battery);
-
 			let workerDescription = {
 				cores: navigator.hardwareConcurrency,
 				battery: {
@@ -15,16 +13,10 @@ window.addEventListener('load', () => {
 					level: battery.level,
 					chargingTime: battery.chargingTime,
 					dischargingTime: battery.dischargingTime
-				},
-				id: Math.floor(Math.random() * 1000)
+				}
 			};
 			console.log(workerDescription);
-			socket.send(JSON.stringify(workerDescription));
+			socket.emit('answer', workerDescription);
 		});
-	});
-
-	// Listen for messages
-	socket.addEventListener('message', function (event) {
-		console.log('Message from server', event.data);
 	});
 });
